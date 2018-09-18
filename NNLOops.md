@@ -9,7 +9,7 @@
       RDF
       <pre lang="cpp">df.Filter("Sum(Muon_pt[abs(Muon_eta) > 1]) > 30").Histo1D("Muon_pt")</pre>
       TTree::Draw
-      <pre lang="cpp">Draw("Muon_pt","Sum$(Muon_pt*(Muon_eta > 1)) > 30")</pre>
+      <pre lang="cpp">Draw("Muon_pt","Sum$(Muon_pt*(abs(Muon_eta) > 1)) > 30")</pre>
     </td>
   </tr>
   <tr>
