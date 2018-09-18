@@ -23,6 +23,10 @@
     </td>
   </tr>
   <tr>
+    <td>For every event, for every Z boson candidate, look for the back-to-back jet and make an histogram of the ratio of their transverse momenta.</td>
+    <td>???</td>
+  </tr>
+  <tr>
     <td>For every event, for every jet, take all tracks and find the closest track that has pt>1 gev, and then plot the delta-R of that track and jet, the jet's pT, and the tracks pT.</td>
     <td>???</td>
   </tr>
