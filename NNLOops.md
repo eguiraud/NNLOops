@@ -68,4 +68,55 @@ for e in events:
     </pre></td>
     <td>???</td>
   </tr>
+  <tr>
+    <td> Among all tracks, select muons and plot their p/pT distribution. </td>
+    <td><pre lang="python">
+    h = TH2D("h", ";P[GeV/c];p_{T}[GeV/c]", 100, 0, 100, 100, 0, 3)
+    for track in tracks:
+      if abs(track.GetPdgCode() == 13):
+        pt = hypot(track.GetPx(), track.GetPy())
+        p = hypot(track.GetPz(), pt)
+        h.Fill(p, pT)
+    </pre></td>
+    <td>
+      RDF
+      <pre lang="cpp">
+      df.Define("Tracks", clones_converter&lt;ShipMCTrack&gt;, {"MCTrack"})
+          .Define("Muons",
+                  [](const RVec&lt;ShipMCTrack&gt; &ts) {
+                        return Filter(ts, [](const ShipMCTrack &t) {
+                              return abs(t.GetPdgCode()) == 13;
+                        });
+                  },
+                  {"Tracks"})
+          .Define("Muons_pt",
+                  [](const RVec&lt;ShipMCTrack&gt; &muons) {
+                        return Map(muons, [](const ShipMCTrack &muon) {
+                              return sqrt(muon.GetPx() * muon.GetPx() +
+                                          muon.GetPy() * muon.GetPy());
+                        });
+                  },
+                  {"Muons"})
+          .Define("Muons_P",
+                  [](const RVec&lt;ShipMCTrack&gt; &muons) {
+                        return Map(muons, [](const ShipMCTrack &muon) {
+                              return sqrt(muon.GetPx() * muon.GetPx() +
+                                          muon.GetPy() * muon.GetPy() +
+                                          muon.GetPz() * muon.GetPz());
+                        });
+                  },
+                  {"Muons"})
+          .Histo2D({"h", ";P[GeV/c];p_{T}[GeV/c]", 100, 0, 100, 100, 0, 3}, "Muons_P",
+                   "Muons_pt");
+      </pre>
+      TTree::Draw
+      <pre lang="cpp">
+      tree->Draw("sqrt(MCTrack.GetPx()*MCTrack.GetPx()+MCTrack.GetPy()*MCTrack.GetPy())"
+           ":sqrt(MCTrack.GetPx()*MCTrack.GetPx()+MCTrack.GetPy()*MCTrack.GetPy()+MCTrack.GetPz()*MCTrack.GetPz())"
+           ">>h(100, 0, 100, 100, 0, 3)",
+           "abs(MCTrack.GetPdgCode())==13",
+           "colz")
+      </pre>
+    </td>
+  </tr>
 </table>
